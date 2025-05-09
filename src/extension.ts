@@ -3,8 +3,14 @@ import { FileLinkHoverProvider } from './hover-provider';
 import { FileOpener } from './file-opener';
 
 export function activate(context: vscode.ExtensionContext) {
+    console.log('File Linker extension activated');
+
+    // 建立輸出頻道
+    const outputChannel = vscode.window.createOutputChannel("File Linker Debug");
+    context.subscriptions.push(outputChannel);
+
     // 註冊 hover provider
-    const hoverProvider = new FileLinkHoverProvider();
+    const hoverProvider = new FileLinkHoverProvider(outputChannel);
     context.subscriptions.push(
         vscode.languages.registerHoverProvider('*', hoverProvider)
     );
@@ -17,19 +23,6 @@ export function activate(context: vscode.ExtensionContext) {
         }
     );
     context.subscriptions.push(openFileCommand);
-
-    // Alt 鍵偵測與 setContext（使用 onDidChangeTextEditorSelection）
-    const selection_listener = vscode.window.onDidChangeTextEditorSelection((e) => {
-        // 取得目前鍵盤狀態
-        const alt_pressed = (e as any).selections && (e as any).kind === vscode.TextEditorSelectionChangeKind.Mouse && (e as any).textEditor && (e as any).textEditor.options && (e as any).textEditor.options.cursorStyle;
-        // 由於 VSCode API 無法直接取得 Alt 狀態，僅能於滑鼠選取時嘗試設為 true
-        vscode.commands.executeCommand(
-            'setContext',
-            'file-linker.altPressed',
-            alt_pressed ?? false,
-        );
-    });
-    context.subscriptions.push(selection_listener);
 
     // 設定初始 Alt 鍵狀態
     vscode.commands.executeCommand('setContext', 'file-linker.altPressed', false);
