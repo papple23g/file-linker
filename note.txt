@@ -1,0 +1,36 @@
+我想要開發一個VSCode模組，讓我可以在VSCode中快速開啟檔案。
+當我按下Alt鍵時，我希望能夠點擊方括號內的檔案名稱，然後使用以下指令來開啟檔案：
+& 'C:\Program Files\Everything\es.exe' `
+    -n 1                   `
+    -full-path-and-name    `
+    -sort run-count        `
+    '{text}' | ForEach-Object {
+    if ($_ -ne '') { Start-Process $_ }
+}
+請搜尋網路官方文件或相關資源，幫我寫出這個VSCode模組的程式碼。
+也請先幫我寫好 .gitignore 檔案
+
+
+程式.效率: 建立VSCode模組: 讓方括號內的檔案名稱變成開啟連結
+    規格: 按下Alt後，便可按下「[{text}]」裡的內容，指用以下指令開啟檔案:
+        & 'C:\Program Files\Everything\es.exe' `
+            -n 1                   `
+            -full-path-and-name    `
+            -sort run-count        `
+            '{text}' | ForEach-Object {
+            if ($_ -ne '') { Start-Process $_ }
+        }
+        EX
+            & 'C:\Program Files\Everything\es.exe' `
+                -n 1                   `
+                -full-path-and-name    `
+                -sort run-count        `
+                '250419 桌球模擬_最佳回擊發球的持拍仰角策略_tabletennis_return_simulation_W' | ForEach-Object {
+                if ($_ -ne '') { Start-Process $_ }
+            }
+
+    setup: 下載 `es.exe` 至 `C:\Program Files\Everything`
+        https://www.voidtools.com/downloads/#cli
+
+    REF:
+        https://chatgpt.com/c/681bb096-a758-8011-8aa8-061134ddfb87
