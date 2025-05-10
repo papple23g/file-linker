@@ -4,6 +4,10 @@
   "description": "Quickly open files by clicking text in square brackets while holding Alt key",
   "version": "0.0.1",
   "publisher": "user",
+  "repository": {
+    "type": "git",
+    "url": "YOUR_REPOSITORY_URL_HERE"
+  },
   "engines": {
     "vscode": "^1.60.0"
   },
