@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { spawn, exec } from 'child_process';
+import { spawn } from 'child_process';
 import * as iconv from 'iconv-lite';
 
 export class FileOpener {
@@ -80,23 +80,26 @@ export class FileOpener {
             const fileDir = filePath.substring(0, filePath.lastIndexOf('\\'));
             this.outputChannel.appendLine(`檔案目錄: ${fileDir}`);
 
-            // 使用 VSCode API 在系統預設應用程式中開啟檔案
-            const fileUri = vscode.Uri.file(filePath);
-            this.outputChannel.appendLine(`嘗試使用系統預設應用程式開啟: ${fileUri.fsPath}`);
-            vscode.env.openExternal(fileUri).then(
-                (success) => {
-                    if (success) {
-                        this.outputChannel.appendLine('外部應用程式開啟成功');
-                    } else {
-                        this.outputChannel.appendLine('外部應用程式開啟失敗');
-                        vscode.window.showErrorMessage('無法使用外部應用程式開啟檔案');
-                    }
-                },
-                (err: Error) => {
-                    this.outputChannel.appendLine(`開啟外部應用程式錯誤: ${err.message}`);
-                    vscode.window.showErrorMessage(`無法開啟檔案: ${err.message}`);
+            // 使用 explorer 命令開啟檔案
+            const command = `explorer "${filePath}"`;
+            this.outputChannel.appendLine(`執行命令: ${command}`);
+            const childProcess = spawn(command, [], {
+                shell: true,
+                cwd: fileDir
+            });
+
+            childProcess.on('error', (err) => {
+                this.outputChannel.appendLine(`執行錯誤: ${err.message}`);
+                vscode.window.showErrorMessage(`開啟檔案失敗: ${err.message}`);
+            });
+
+            childProcess.on('exit', (code) => {
+                if (code !== 0) {
+                    this.outputChannel.appendLine(`命令執行失敗，結束代碼: ${code}`);
+                } else {
+                    this.outputChannel.appendLine('檔案開啟成功');
                 }
-            );
+            });
         });
     }
 }
