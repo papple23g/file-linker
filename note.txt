@@ -29,8 +29,14 @@
                 if ($_ -ne '') { Start-Process $_ }
             }
 
+            for /f "delims=" %A in ('""C:\Program Files\Everything\es.exe" -n 1 -full-path-and-name -sort run-count "250419 桌球模擬_最佳回擊發球的持拍仰角策略_tabletennis_return_simulation_W""') do @if not "%A"=="" start "" "%A"
+
+
     setup: 下載 `es.exe` 至 `C:\Program Files\Everything`
         https://www.voidtools.com/downloads/#cli
 
     REF:
         https://chatgpt.com/c/681bb096-a758-8011-8aa8-061134ddfb87
+
+
+        

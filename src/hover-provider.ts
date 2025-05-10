@@ -39,16 +39,19 @@ export class FileLinkHoverProvider implements vscode.HoverProvider {
         const file_name = matches[0].slice(1, -1); // 移除方括號
         this.outputChannel.appendLine(`File name extracted: ${file_name}`);
 
+        // 使用 JSON.stringify 確保參數被正確序列化
+        const args = [file_name];
         const command_uri = vscode.Uri.parse(
-            `command:file-linker.openFile?${encodeURIComponent(JSON.stringify([file_name]))}`,
+            `command:file-linker.openFile?${encodeURIComponent(JSON.stringify(args))}`,
         );
         this.outputChannel.appendLine(`Command URI: ${command_uri.toString()}`);
 
-        const hover_content = new vscode.MarkdownString(
-            `<a href="${command_uri}">開啟 ${file_name}</a>`
-        );
+        const hover_content = new vscode.MarkdownString();
+        hover_content.supportHtml = true;
+        hover_content.supportThemeIcons = true;
         hover_content.isTrusted = true;
-        this.outputChannel.appendLine('Hover content created with HTML link.');
+        hover_content.appendMarkdown(`[開啟 ${file_name}](${command_uri})`);
+        this.outputChannel.appendLine('Hover content created with Markdown link and command URI.');
 
         return new vscode.Hover(hover_content, range);
     }

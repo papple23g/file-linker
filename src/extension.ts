@@ -9,6 +9,9 @@ export function activate(context: vscode.ExtensionContext) {
     const outputChannel = vscode.window.createOutputChannel("File Linker Debug");
     context.subscriptions.push(outputChannel);
 
+    // 初始化 FileOpener 的輸出頻道
+    FileOpener.initOutputChannel(outputChannel);
+
     // 註冊 hover provider
     const hoverProvider = new FileLinkHoverProvider(outputChannel);
     context.subscriptions.push(
@@ -19,7 +22,14 @@ export function activate(context: vscode.ExtensionContext) {
     const openFileCommand = vscode.commands.registerCommand(
         'file-linker.openFile',
         (file_name: string) => {
-            FileOpener.openFile(file_name);
+            outputChannel.appendLine(`Command triggered with file name: ${file_name}`);
+            try {
+                FileOpener.openFile(file_name);
+                outputChannel.appendLine('FileOpener.openFile called successfully');
+            } catch (error) {
+                outputChannel.appendLine(`Error in FileOpener.openFile: ${error}`);
+                throw error;
+            }
         }
     );
     context.subscriptions.push(openFileCommand);
