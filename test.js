@@ -1,8 +1,8 @@
 const { exec } = require('child_process');
 
 // 測試檔案路徑
-// const filePath = 'C:\\Users\\pappl\\我的雲端硬碟\\個人筆記\\_話題集錦.txt';
-const filePath = "C:\\Program Files\\Everything\\Everything.exe";
+const filePath = 'C:\\Users\\pappl\\我的雲端硬碟\\個人筆記\\_話題集錦.txt';
+// const filePath = "C:\\Program Files\\Everything\\Everything.exe";
 
 // 測試不同的開啟命令
 const commands = [

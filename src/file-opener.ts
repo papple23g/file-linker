@@ -80,28 +80,23 @@ export class FileOpener {
             const fileDir = filePath.substring(0, filePath.lastIndexOf('\\'));
             this.outputChannel.appendLine(`檔案目錄: ${fileDir}`);
 
-            // 使用完整路徑執行 cmd.exe
-            const command = 'start "" "' + filePath + '"';
-            this.outputChannel.appendLine(`執行命令: ${command}`);
-
-            exec(command, {
-                cwd: fileDir,
-                windowsHide: true,
-                env: process.env,
-                shell: 'C:\\Windows\\System32\\cmd.exe'
-            }, (error: Error | null, _stdout: string, stderr: string) => {
-                if (error) {
-                    this.outputChannel.appendLine(`執行錯誤: ${error.message}`);
-                    vscode.window.showErrorMessage(`開啟檔案失敗: ${error.message}`);
-                    return;
+            // 使用 VSCode API 在系統預設應用程式中開啟檔案
+            const fileUri = vscode.Uri.file(filePath);
+            this.outputChannel.appendLine(`嘗試使用系統預設應用程式開啟: ${fileUri.fsPath}`);
+            vscode.env.openExternal(fileUri).then(
+                (success) => {
+                    if (success) {
+                        this.outputChannel.appendLine('外部應用程式開啟成功');
+                    } else {
+                        this.outputChannel.appendLine('外部應用程式開啟失敗');
+                        vscode.window.showErrorMessage('無法使用外部應用程式開啟檔案');
+                    }
+                },
+                (err: Error) => {
+                    this.outputChannel.appendLine(`開啟外部應用程式錯誤: ${err.message}`);
+                    vscode.window.showErrorMessage(`無法開啟檔案: ${err.message}`);
                 }
-                if (stderr) {
-                    this.outputChannel.appendLine(`錯誤輸出: ${stderr}`);
-                    vscode.window.showErrorMessage(`開啟檔案時發生錯誤: ${stderr}`);
-                    return;
-                }
-                this.outputChannel.appendLine('檔案開啟成功');
-            });
+            );
         });
     }
 }
