@@ -5,40 +5,46 @@ import { FileOpener } from './file-opener';
 export function activate(context: vscode.ExtensionContext) {
     console.log('File Linker extension activated');
 
-    // 建立輸出頻道
+    // Create output channel
     const outputChannel = vscode.window.createOutputChannel("File Linker Debug");
     context.subscriptions.push(outputChannel);
+    outputChannel.appendLine('1. Output channel created');
 
-    // 初始化 FileOpener 的輸出頻道
+    // Initialize FileOpener output channel
     FileOpener.initOutputChannel(outputChannel);
+    outputChannel.appendLine('2. FileOpener initialized');
 
-    // 註冊 hover provider
+    // Register hover provider
     const hoverProvider = new FileLinkHoverProvider(outputChannel);
     context.subscriptions.push(
         vscode.languages.registerHoverProvider('*', hoverProvider)
     );
+    outputChannel.appendLine('3. Hover provider registered');
 
-    // 註冊開啟檔案的命令
+    // Register file open command
     const openFileCommand = vscode.commands.registerCommand(
         'file-linker.openFile',
         (file_name: string) => {
-            outputChannel.appendLine(`Command triggered with file name: ${file_name}`);
+            outputChannel.appendLine(`Command triggered for file: ${file_name}`);
             try {
                 FileOpener.openFile(file_name);
-                outputChannel.appendLine('FileOpener.openFile called successfully');
+                outputChannel.appendLine('File opened successfully');
             } catch (error) {
-                outputChannel.appendLine(`Error in FileOpener.openFile: ${error}`);
+                outputChannel.appendLine(`Error opening file: ${error}`);
                 throw error;
             }
         }
     );
     context.subscriptions.push(openFileCommand);
+    outputChannel.appendLine('4. File open command registered');
 
-    // 設定初始 Alt 鍵狀態
+    // Set initial alt key state
     vscode.commands.executeCommand('setContext', 'file-linker.altPressed', false);
+    outputChannel.appendLine('5. Initial context set');
+
+    outputChannel.appendLine('6. Activation completed successfully');
 }
 
 export function deactivate() {
-    // 清理 Alt 鍵狀態
     vscode.commands.executeCommand('setContext', 'file-linker.altPressed', false);
 }

@@ -37,4 +37,7 @@ test
     [_話題集錦.txt]
 
 打包
+    移除 node_modules
+    移除 package-lock.json
+    npm install
     vsce package --allow-missing-repository

@@ -1,12 +1,15 @@
 import * as vscode from 'vscode';
-import { spawn } from 'child_process';
-import * as iconv from 'iconv-lite';
+import { spawn } from 'child_process'; // Uncommented for testing
+import * as iconv from 'iconv-lite'; // Uncommented for testing
+
+console.log('FileOpener module loaded'); // Added log
 
 export class FileOpener {
     private static readonly everythingPath = 'C:\\Program Files\\Everything\\es.exe';
     private static outputChannel: vscode.OutputChannel;
 
     public static initOutputChannel(channel: vscode.OutputChannel) {
+        console.log('FileOpener.initOutputChannel called'); // Added log
         this.outputChannel = channel;
     }
 
@@ -57,7 +60,7 @@ export class FileOpener {
 
         esProcess.on('close', (code) => {
             this.outputChannel.appendLine(`Everything 搜尋完成，結束代碼: ${code}`);
-            
+
             if (code !== 0) {
                 vscode.window.showErrorMessage(`Everything 搜尋失敗，結束代碼: ${code}`);
                 return;
@@ -70,12 +73,12 @@ export class FileOpener {
 
             // 開啟找到的檔案
             // 移除可能的換行符並確保路徑正確
-            const filePath = result.replace(/[\r\n]+$/, ''); 
+            const filePath = result.replace(/[\r\n]+$/, '');
             this.outputChannel.appendLine(`準備開啟檔案: ${filePath}`);
 
             // 使用系統預設應用程式開啟檔案
             this.outputChannel.appendLine(`使用預設應用程式開啟檔案: ${filePath}`);
-            
+
             // 獲取檔案所在目錄
             const fileDir = filePath.substring(0, filePath.lastIndexOf('\\'));
             this.outputChannel.appendLine(`檔案目錄: ${fileDir}`);

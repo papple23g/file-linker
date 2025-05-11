@@ -42,6 +42,12 @@
     "eslint": "^8.x.x",
     "typescript": "^5.x.x"
   },
+  "files": [
+    "out/",
+    "node_modules/iconv-lite/",
+    "node_modules/safer-buffer/",
+    "LICENSE.md"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
