@@ -1,0 +1,10 @@
+.vscode/
+node_modules/
+src/
+tsconfig.json
+package-lock.json
+webpack.config.js
+memory-bank/
+.gitignore
+note.txt
+test.js
