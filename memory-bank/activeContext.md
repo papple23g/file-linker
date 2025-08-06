@@ -1,11 +1,12 @@
-# 當前開發階段與進行中模組
+# Current Development Stage & Active Modules
 
-## 當前階段
-- Memory Bank 文件已初始化
-- VSCode 擴充功能主架構已完成（hover-provider、file-opener、extension）
+## Current Stage
+- **Pre-Release Finalization**: The core feature set is complete. The current focus is on documentation, final checks, and preparing for the initial release to the VSCode Marketplace.
 
-## 進行中模組
-- Alt 鍵偵測與 hover 行為優化
-- PowerShell 指令安全性強化
-- 使用體驗提示（hover 說明）
-- 文件補齊與專案說明
+## Completed in this Session
+- **Dependency Handling**: Implemented robust error handling for the dependency on the external "Everything" service.
+- **Documentation**: Created and updated all user-facing documentation (`README.md`, extension description) to be clear, concise, and in English.
+- **Memory Bank Sync**: All Memory Bank files have been updated to reflect the latest project status and architectural decisions.
+
+## Next Immediate Steps
+- **Publishing**: Guide the user through the process of publishing the extension to the VSCode Marketplace.

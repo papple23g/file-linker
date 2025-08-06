@@ -1,29 +1,39 @@
 import * as vscode from 'vscode';
-import { spawn } from 'child_process'; // Uncommented for testing
-import * as iconv from 'iconv-lite'; // Uncommented for testing
+import { spawn } from 'child_process';
+import * as iconv from 'iconv-lite';
+import * as path from 'path';
 
-console.log('FileOpener module loaded'); // Added log
+console.log('FileOpener module loaded');
 
 export class FileOpener {
-    private static readonly everythingPath = 'C:\\Program Files\\Everything\\es.exe';
     private static outputChannel: vscode.OutputChannel;
 
     public static initOutputChannel(channel: vscode.OutputChannel) {
-        console.log('FileOpener.initOutputChannel called'); // Added log
+        console.log('FileOpener.initOutputChannel called');
         this.outputChannel = channel;
     }
 
     public static openFile(file_name: string): void {
         this.outputChannel.appendLine(`開始搜尋檔案: ${file_name}`);
 
+        const extension = vscode.extensions.getExtension('user.file-linker');
+        if (!extension) {
+            vscode.window.showErrorMessage('無法找到擴充功能實例。');
+            return;
+        }
+
+        const esPath = path.join(extension.extensionPath, 'bin', 'es.exe');
+        const esDir = path.dirname(esPath);
+
         // 使用 Everything 搜尋檔案
-        const esProcess = spawn(this.everythingPath, [
+        const esProcess = spawn(esPath, [
             '-n', '1',
             '-full-path-and-name',
             '-sort', 'run-count',
             file_name
         ], {
-            windowsHide: true
+            windowsHide: true,
+            cwd: esDir
         });
 
         let result = '';
@@ -36,21 +46,12 @@ export class FileOpener {
             this.outputChannel.appendLine(`搜尋結果 (原始 bytes): ${data.toString('hex')}`);
             this.outputChannel.appendLine(`搜尋結果 (cp950 解碼): ${decoded}`);
         });
+
         esProcess.stderr.on('data', (data: Buffer) => {
             const decodedErr = iconv.decode(data, 'cp950');
             error += decodedErr;
             this.outputChannel.appendLine(`Everything 錯誤 (原始 bytes): ${data.toString('hex')}`);
             this.outputChannel.appendLine(`Everything 錯誤 (cp950 解碼): ${decodedErr}`);
-        });
-
-        esProcess.stderr.on('data', (data: Buffer) => {
-            try {
-                error += data.toString('utf8');
-            } catch (e) {
-                error += data.toString();
-            }
-            this.outputChannel.appendLine(`Everything 錯誤 (原始): ${data.toString()}`);
-            this.outputChannel.appendLine(`Everything 錯誤 (解碼): ${error}`);
         });
 
         esProcess.on('error', (err) => {
@@ -62,7 +63,19 @@ export class FileOpener {
             this.outputChannel.appendLine(`Everything 搜尋完成，結束代碼: ${code}`);
 
             if (code !== 0) {
-                vscode.window.showErrorMessage(`Everything 搜尋失敗，結束代碼: ${code}`);
+                if (code === 8) {
+                    // Error 8: Everything IPC window not found.
+                    vscode.window.showErrorMessage(
+                        'Everything service is not running. Please start Everything to use this feature.',
+                        'Go to Download Page'
+                    ).then(selection => {
+                        if (selection === 'Go to Download Page') {
+                            vscode.env.openExternal(vscode.Uri.parse('https://www.voidtools.com/downloads/'));
+                        }
+                    });
+                } else {
+                    vscode.window.showErrorMessage(`Everything search failed with exit code: ${code}. See Output panel for details.`);
+                }
                 return;
             }
 
