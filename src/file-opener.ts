@@ -16,7 +16,7 @@ export class FileOpener {
     public static openFile(file_name: string): void {
         this.outputChannel.appendLine(`開始搜尋檔案: ${file_name}`);
 
-        const extension = vscode.extensions.getExtension('user.file-linker');
+        const extension = vscode.extensions.getExtension('papple23g.file-linker');
         if (!extension) {
             vscode.window.showErrorMessage('無法找到擴充功能實例。');
             return;

@@ -1,3 +1,3 @@
-# 專案簡介
+# Project Brief
 
-本專案為 VSCode 擴充功能「File Linker」，目標是讓使用者在 VSCode 編輯器中，按下 Alt 鍵並點擊方括號內的檔案名稱時，能自動呼叫 Everything CLI 搜尋並開啟該檔案，提升跨專案快速開檔效率。
+This project is a VSCode extension named "File Linker". Its goal is to allow users to hover over and click on a filename within square brackets in the editor, which then automatically calls the Everything CLI to search for and open the file, improving cross-project file opening efficiency.

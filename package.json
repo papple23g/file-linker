@@ -1,8 +1,8 @@
 {
   "name": "file-linker",
   "displayName": "File Linker",
-  "description": "Alt-click to instantly open file paths using the Everything search engine. Requires Everything to be running.",
-  "version": "0.0.1",
+  "description": "Hover and click to instantly open file paths using the Everything search engine. Requires Everything to be running.",
+  "version": "1.0.0",
   "publisher": "papple23g",
   "repository": {
     "type": "git",

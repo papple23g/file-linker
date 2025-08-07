@@ -1,34 +1,44 @@
-[閱讀繁體中文版 (Read in Traditional Chinese)](README.zh-tw.md)
+# File Linker
 
-# File Linker for VS Code
-
-Instantly open files in VS Code by hovering over and clicking file paths in any text file. Powered by the lightning-fast search capabilities of **Everything**.
+A VSCode extension that allows you to hover over and click on file names within square brackets to instantly open them using the Everything search engine.
 
 ## Features
 
--   **Instant File Access**: Simply hover over a file name enclosed in square brackets (e.g., `[my-document.txt]`) to reveal a clickable link.
--   **Partial Name Search**: You don't need the full filename! Just type a part of it, and Everything will find the most relevant file based on your usage history.
--   **Everything Integration**: Leverages the Everything search engine for near-instantaneous file lookups across your entire system.
--   **Smart Error Handling**: If the Everything service isn't running, the extension will notify you and provide a convenient link to the official download page.
+- **Instant File Opening**: Hover over any file name enclosed in square brackets (e.g., `[myfile.txt]`) and click the link to open it instantly.
+- **Cross-Project Search**: Finds files across your entire system, not just within the current workspace.
+- **Everything Integration**: Leverages the powerful Everything search engine for lightning-fast file discovery.
+- **No Manual Pathing**: Eliminates the need to manually browse or type file paths.
 
 ## Requirements
 
-This extension has one crucial requirement:
+- **Everything**: The [Everything](https://www.voidtools.com/) application must be installed and running on your system.
 
-**You must have the [Everything](https://www.voidtools.com/) application installed and running in the background.**
+## Usage
 
-While this extension bundles the necessary command-line tool (`es.exe`), the tool itself needs to communicate with the main Everything service to perform searches. If the service is not running, you will be prompted to start it.
+1. **Mark Files**: In any text file (code, notes, README, etc.), mark a file name using square brackets: `[filename]`.
+2. **Hover**: Move your cursor over the file name within the brackets.
+3. **Click**: Click the "Open File" link that appears in the hover tooltip.
 
-## How It Works
+## Extension Settings
 
-1.  When you hover over text enclosed in `[]`, a tooltip with a link will appear.
-2.  Clicking the link triggers a search using Everything.
-3.  The first file found matching the keyword(s) is opened instantly.
+This extension does not add any VS Code settings.
 
-## Repository
+## Known Issues
 
-[GitHub - papple23g/file-linker](https://github.com/papple23g/file-linker)
+- The extension requires Everything to be running. If it's not, a helpful error message will guide you to install it.
+
+## Release Notes
+
+### 1.0.0
+
+- Initial release of File Linker.
+- Hover and click functionality for opening files.
+- Bundled Everything CLI for seamless integration.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request on [GitHub](https://github.com/papple23g/file-linker).
 
 ## License
 
-MIT
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.

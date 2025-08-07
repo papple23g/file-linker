@@ -38,13 +38,9 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(openFileCommand);
     outputChannel.appendLine('4. File open command registered');
 
-    // Set initial alt key state
-    vscode.commands.executeCommand('setContext', 'file-linker.altPressed', false);
     outputChannel.appendLine('5. Initial context set');
-
     outputChannel.appendLine('6. Activation completed successfully');
 }
 
-export function deactivate() {
-    vscode.commands.executeCommand('setContext', 'file-linker.altPressed', false);
-}
+// this method is called when your extension is deactivated
+export function deactivate() {}

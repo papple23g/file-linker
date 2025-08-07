@@ -1,14 +1,14 @@
-# 產品與使用者情境
+# Product & User Context
 
-## 目標使用者
-- 經常於 VSCode 中跨多專案、資料夾作業的開發者
-- 需快速定位並開啟專案內外檔案者
+## Target Users
+- Developers who frequently work across multiple projects and folders in VSCode.
+- Users who need to quickly locate and open files both within and outside their projects.
 
-## 使用情境
-- 使用者於筆記、README、程式註解等處以 `[檔案名稱]` 標示檔案
-- 按住 Alt 並點擊方括號內檔名，即可自動搜尋並開啟該檔案
-- 無需手動瀏覽資料夾或複製路徑，提升開檔效率
+## Usage Scenarios
+- Users mark files in notes, READMEs, or code comments using `[filename]`.
+- Hover over the filename within the brackets and click the link to automatically search for and open the file.
+- No need to manually browse folders or copy paths, improving file opening efficiency.
 
-## 商業價值
-- 節省開發者尋找檔案時間，提升生產力
-- 降低因檔案路徑錯誤導致的溝通與協作成本
+## Business Value
+- Saves developers time in finding files, boosting productivity.
+- Reduces communication and collaboration costs due to incorrect file paths.
