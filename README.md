@@ -1,17 +1,21 @@
 # File Linker
 
-A VSCode extension that allows you to hover over and click on file names within square brackets to instantly open them using the Everything search engine.
+A VSCode extension that allows you to hover over and click on file names within square brackets to instantly open them using your system's native search engine.
 
 ## Features
 
 - **Instant File Opening**: Hover over any file name enclosed in square brackets (e.g., `[myfile.txt]`) and click the link to open it instantly.
-- **Cross-Project Search**: Finds files across your entire system, not just within the current workspace.
-- **Everything Integration**: Leverages the powerful Everything search engine for lightning-fast file discovery.
+- **Cross-Platform Support**: Works on both Windows and macOS.
+- **Native Integration**:
+  - On **Windows**, it leverages the powerful [Everything](https://www.voidtools.com/) search engine.
+  - On **macOS**, it uses the built-in Spotlight search (`mdfind`).
+- **System-Wide Search**: Finds files across your entire system, not just within the current workspace.
 - **No Manual Pathing**: Eliminates the need to manually browse or type file paths.
 
 ## Requirements
 
-- **Everything**: The [Everything](https://www.voidtools.com/) application must be installed and running on your system.
+- **Windows**: The [Everything](https://www.voidtools.com/) application must be installed and running.
+- **macOS**: No additional software is needed. The extension uses the built-in Spotlight functionality.
 
 ## Usage
 
@@ -25,14 +29,20 @@ This extension does not add any VS Code settings.
 
 ## Known Issues
 
-- The extension requires Everything to be running. If it's not, a helpful error message will guide you to install it.
+- On Windows, the extension requires Everything to be running. If it's not, a helpful error message will guide you to install it.
+- On macOS, search results depend on your Spotlight index. If a file isn't found, ensure it's in a location indexed by Spotlight.
 
 ## Release Notes
+
+### 1.1.0 (Planned)
+
+- Added support for macOS using the native Spotlight search (`mdfind`).
+- The extension is now cross-platform.
 
 ### 1.0.0
 
 - Initial release of File Linker.
-- Hover and click functionality for opening files.
+- Hover and click functionality for opening files on Windows.
 - Bundled Everything CLI for seamless integration.
 
 ## Contributing

@@ -48,7 +48,7 @@ export class FileLinkHoverProvider implements vscode.HoverProvider {
 
         const hover_content = new vscode.MarkdownString();
         hover_content.isTrusted = true;
-        hover_content.appendMarkdown(`[開啟 ${file_name}](${command_uri})`);
+        hover_content.appendMarkdown(`[Open ${file_name}](${command_uri})`);
         this.outputChannel.appendLine('Hover content created with Markdown link and command URI.');
 
         return new vscode.Hover(hover_content, range);
