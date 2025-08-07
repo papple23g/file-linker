@@ -2,8 +2,8 @@
   "name": "file-linker",
   "displayName": "File Linker",
   "description": "Hover and click to instantly open file paths using the Everything search engine. Requires Everything to be running.",
-  "version": "1.1.1",
-  "publisher": "papple23g",
+  "version": "1.1.2",
+  "publisher": "peterwang",
   "repository": {
     "type": "git",
     "url": "https://github.com/papple23g/file-linker"

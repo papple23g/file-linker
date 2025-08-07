@@ -28,7 +28,7 @@ export class FileOpener {
     }
 
     private static openFileOnWindows(fileName: string): void {
-        const extension = vscode.extensions.getExtension('papple23g.file-linker');
+        const extension = vscode.extensions.getExtension('peterwang.file-linker');
         if (!extension) {
             vscode.window.showErrorMessage('無法找到擴充功能實例。');
             return;
