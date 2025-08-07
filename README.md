@@ -1,6 +1,10 @@
+[繁體中文說明](README.zh-tw.md)
+
 # File Linker
 
-A VSCode extension that allows you to hover over and click on file names within square brackets to instantly open them using your system's native search engine.
+A VSCode extension that allows you to hover over and click on file names within square brackets to instantly open them using your system's specific search engine.
+
+![Demo](demo.gif)
 
 ## Features
 
@@ -34,7 +38,12 @@ This extension does not add any VS Code settings.
 
 ## Release Notes
 
-### 1.1.0 (Planned)
+### 1.1.1
+
+- Added demo GIF to READMEs.
+- Added link to Chinese README in English README.
+
+### 1.1.0
 
 - Added support for macOS using the native Spotlight search (`mdfind`).
 - The extension is now cross-platform.
