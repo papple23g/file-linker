@@ -6,7 +6,7 @@
   "publisher": "papple23g",
   "repository": {
     "type": "git",
-    "url": "YOUR_REPOSITORY_URL_HERE"
+    "url": "https://github.com/papple23g/file-linker"
   },
   "engines": {
     "vscode": "^1.60.0"

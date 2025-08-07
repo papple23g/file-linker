@@ -25,6 +25,10 @@
 2.  點擊連結會觸發 Everything 進行搜尋。
 3.  找到的第一個符合關鍵字的檔案將會被立即開啟。
 
+## 原始碼儲存庫
+
+[GitHub - papple23g/file-linker](https://github.com/papple23g/file-linker)
+
 ## 授權條款
 
 MIT

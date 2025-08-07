@@ -25,6 +25,10 @@ While this extension bundles the necessary command-line tool (`es.exe`), the too
 2.  Clicking the link triggers a search using Everything.
 3.  The first file found matching the keyword(s) is opened instantly.
 
+## Repository
+
+[GitHub - papple23g/file-linker](https://github.com/papple23g/file-linker)
+
 ## License
 
 MIT
