@@ -1,8 +1,8 @@
 {
   "name": "file-linker",
   "displayName": "File Linker",
-  "description": "Hover and click to instantly open file paths using the Everything search engine. Requires Everything to be running.",
-  "version": "1.1.2",
+  "description": "Hover and click to instantly open files marked in square brackets using your system's search engine (Everything on Windows, Spotlight on macOS).",
+  "version": "1.1.3",
   "publisher": "peterwang",
   "repository": {
     "type": "git",
