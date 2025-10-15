@@ -35,7 +35,11 @@
     "webpack:prod": "webpack --mode production",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./dist/test/runTest.js"
+    "test": "node ./dist/test/runTest.js",
+    "package": "vsce package",
+    "publish:vscode": "vsce publish",
+    "publish:openvsx": "ovsx publish -p $OVSX_TOKEN",
+    "publish:all": "npm run publish:vscode && npm run publish:openvsx"
   },
   "devDependencies": {
     "@types/node": "^16.x.x",

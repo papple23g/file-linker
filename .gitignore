@@ -7,3 +7,9 @@ node_modules
 coverage
 *.log
 note.txt
+
+# 環境變數和敏感資訊
+.env
+.env.local
+*.token
+*.key
