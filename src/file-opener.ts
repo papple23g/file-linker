@@ -3,6 +3,7 @@ import { spawn } from 'child_process';
 import * as iconv from 'iconv-lite';
 import * as path from 'path';
 import * as os from 'os';
+import * as fs from 'fs';
 
 console.log('FileOpener module loaded');
 
@@ -14,10 +15,26 @@ export class FileOpener {
         this.outputChannel = channel;
     }
 
+    private static isAbsolutePath(filePath: string): boolean {
+        // Windows: C:\, D:\, etc. or \\network\path
+        // Unix/Mac: /path/to/file
+        const windowsAbsolutePattern = /^[a-zA-Z]:[\\\/]|^\\\\[^\\\/]+/;
+        const unixAbsolutePattern = /^\/[^\/]/;
+        return windowsAbsolutePattern.test(filePath) || unixAbsolutePattern.test(filePath);
+    }
+
     public static openFile(fileName: string): void {
-        this.outputChannel.appendLine(`開始搜尋檔案: ${fileName}`);
+        this.outputChannel.appendLine(`開始處理檔案: ${fileName}`);
         const platform = os.platform();
 
+        // 檢查是否為完整路徑
+        if (this.isAbsolutePath(fileName)) {
+            this.outputChannel.appendLine(`偵測到完整路徑，直接開啟檔案`);
+            this.openFileDirectly(fileName, platform);
+            return;
+        }
+
+        this.outputChannel.appendLine(`非完整路徑，使用搜尋引擎搜尋`);
         if (platform === 'win32') {
             this.openFileOnWindows(fileName);
         } else if (platform === 'darwin') {
@@ -25,6 +42,18 @@ export class FileOpener {
         } else {
             vscode.window.showErrorMessage(`不支援的作業系統: ${platform}`);
         }
+    }
+
+    private static openFileDirectly(filePath: string, platform: string): void {
+        // 檢查檔案是否存在
+        if (!fs.existsSync(filePath)) {
+            vscode.window.showErrorMessage(`檔案不存在: ${filePath}`);
+            this.outputChannel.appendLine(`檔案不存在: ${filePath}`);
+            return;
+        }
+
+        const command = platform === 'win32' ? 'explorer' : 'open';
+        this.executeOpenFileCommand(command, filePath);
     }
 
     private static openFileOnWindows(fileName: string): void {
