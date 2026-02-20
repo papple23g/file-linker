@@ -49,7 +49,18 @@ export class FileOpener {
 
         let result = '';
         esProcess.stdout.on('data', (data: Buffer) => {
-            const decoded = iconv.decode(data, 'cp950').trim();
+            // 先嘗試 UTF-8 解碼
+            let decoded = iconv.decode(data, 'utf8');
+            
+            // 如果包含 replacement character (�)，表示 UTF-8 解碼失敗，改用 cp950
+            if (decoded.includes('\uFFFD')) {
+                decoded = iconv.decode(data, 'cp950');
+                this.outputChannel.appendLine(`使用 cp950 編碼解碼`);
+            } else {
+                this.outputChannel.appendLine(`使用 UTF-8 編碼解碼`);
+            }
+            
+            decoded = decoded.trim();
             result += decoded;
             this.outputChannel.appendLine(`Everything 搜尋結果: ${decoded}`);
         });
@@ -82,12 +93,25 @@ export class FileOpener {
                 return;
             }
 
-            if (!result) {
+            // 使用 trim() 移除所有前後空白字元
+            const filePath = result.trim();
+            
+            // 詳細記錄搜尋結果
+            this.outputChannel.appendLine(`搜尋結果處理後: "${filePath}" (長度: ${filePath.length})`);
+            
+            if (!filePath) {
+                this.outputChannel.appendLine('搜尋結果為空');
                 vscode.window.showInformationMessage(`找不到檔案: ${fileName}`);
                 return;
             }
 
-            const filePath = result.replace(/[\r\n]+$/, '');
+            // 驗證路徑格式是否有效（基本檢查：包含路徑分隔符或磁碟代號）
+            if (!filePath.includes('\\') && !filePath.includes('/') && !filePath.match(/^[a-zA-Z]:/)) {
+                this.outputChannel.appendLine(`無效的路徑格式: ${filePath}`);
+                vscode.window.showWarningMessage(`搜尋結果路徑格式無效: ${fileName}`);
+                return;
+            }
+
             this.executeOpenFileCommand('explorer', filePath);
         });
     }
@@ -138,18 +162,13 @@ export class FileOpener {
 
     private static executeOpenFileCommand(command: 'explorer' | 'open', filePath: string): void {
         this.outputChannel.appendLine(`準備開啟檔案: ${filePath}`);
-        
-        let openCommand: string;
-        if (command === 'explorer') {
-            // 使用 /select 參數可以開啟檔案總管並選中檔案
-            openCommand = `explorer.exe /select,"${filePath}"`;
-        } else {
-            openCommand = `open "${filePath}"`;
-        }
+        const openCommand = command === 'explorer' ? `explorer "${filePath}"` : `open "${filePath}"`;
+        const fileDir = path.dirname(filePath);
 
         this.outputChannel.appendLine(`執行命令: ${openCommand}`);
         const childProcess = spawn(openCommand, [], {
-            shell: true
+            shell: true,
+            cwd: fileDir
         });
 
         childProcess.on('error', (err) => {

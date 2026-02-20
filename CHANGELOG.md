@@ -2,6 +2,21 @@
 
 All notable changes to the "File Linker" extension will be documented in this file.
 
+## [1.1.5] - 2026-02-20
+
+### Fixed
+- **Critical bug fix**: Restored original file opening behavior from v1.1.0 (commit f8c235e)
+  - Removed `/select` parameter that was causing all links to open "This PC" directory
+  - Restored `cwd` parameter for reliable file operations
+  - Files now open directly with default program instead of only showing parent directory
+  - Fixed UTF-8 encoding detection for paths with Chinese characters
+
+### Changed
+- Simplified file opening logic back to proven implementation
+  - Files: Open directly with default application
+  - Directories: Open in Windows Explorer
+  - Automatic encoding detection (UTF-8/CP950) for international file paths
+
 ## [1.1.4] - 2026-02-20
 
 ### Fixed
