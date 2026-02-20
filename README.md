@@ -38,6 +38,16 @@ This extension does not add any VS Code settings.
 
 ## Release Notes
 
+### 1.1.4
+
+- **Critical Bug Fix**: Resolved "spawn cmd.exe ENOENT" error when opening files with paths containing Chinese characters.
+- **Improved User Experience**: Files are now opened in Explorer with automatic selection using the `/select` parameter.
+- **Enhanced Reliability**: Removed problematic working directory parameter that caused file opening failures.
+
+### 1.1.3
+
+- Bug fixes and stability improvements.
+
 ### 1.1.1
 
 - Added demo GIF to READMEs.

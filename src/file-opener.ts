@@ -138,13 +138,18 @@ export class FileOpener {
 
     private static executeOpenFileCommand(command: 'explorer' | 'open', filePath: string): void {
         this.outputChannel.appendLine(`準備開啟檔案: ${filePath}`);
-        const openCommand = command === 'explorer' ? `explorer "${filePath}"` : `open "${filePath}"`;
-        const fileDir = path.dirname(filePath);
+        
+        let openCommand: string;
+        if (command === 'explorer') {
+            // 使用 /select 參數可以開啟檔案總管並選中檔案
+            openCommand = `explorer.exe /select,"${filePath}"`;
+        } else {
+            openCommand = `open "${filePath}"`;
+        }
 
         this.outputChannel.appendLine(`執行命令: ${openCommand}`);
         const childProcess = spawn(openCommand, [], {
-            shell: true,
-            cwd: fileDir
+            shell: true
         });
 
         childProcess.on('error', (err) => {
