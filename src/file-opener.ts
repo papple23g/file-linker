@@ -4,6 +4,7 @@ import * as iconv from 'iconv-lite';
 import * as path from 'path';
 import * as os from 'os';
 import { isPlausibleFilePath } from './path-utils';
+import { openWithExplorerSelect, openWithMacOpen } from './openers';
 
 export class FileOpener {
     private static log: (message: string) => void = () => {};
@@ -174,18 +175,11 @@ export class FileOpener {
     private static executeOpenFileCommand(command: 'explorer' | 'open', filePath: string): void {
         this.log(`準備開啟檔案: ${filePath}`);
 
-        const openCommand =
+        // IMPORTANT (Windows): avoid shell=true, otherwise emoji/non-ANSI chars can break in cmd.exe.
+        const childProcess =
             command === 'explorer'
-                ? `explorer.exe /select,"${filePath}"`
-                : `open "${filePath}"`;
-
-        this.log(`執行命令: ${openCommand}`);
-
-        const fileDir = path.dirname(filePath);
-        const childProcess = spawn(openCommand, [], {
-            shell: true,
-            cwd: fileDir,
-        });
+                ? openWithExplorerSelect(filePath)
+                : openWithMacOpen(filePath);
 
         childProcess.on('error', (err) => {
             this.log(`執行錯誤: ${err.message}`);

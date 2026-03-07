@@ -31,7 +31,10 @@ const config = {
         exclude: /node_modules|src\\test/,
         use: [
           {
-            loader: 'ts-loader'
+            loader: 'ts-loader',
+            options: {
+              configFile: 'tsconfig.extension.json'
+            }
           }
         ]
       }
