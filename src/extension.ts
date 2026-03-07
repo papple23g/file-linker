@@ -1,45 +1,33 @@
 import * as vscode from 'vscode';
 import { FileLinkHoverProvider } from './hover-provider';
 import { FileOpener } from './file-opener';
+import { createLogger } from './logger';
 
 export function activate(context: vscode.ExtensionContext) {
-    console.log('File Linker extension activated');
-
-    // Create output channel
-    const outputChannel = vscode.window.createOutputChannel("File Linker Debug");
+    // Create output channel (only writes when debug setting is enabled)
+    const outputChannel = vscode.window.createOutputChannel('File Linker Debug');
     context.subscriptions.push(outputChannel);
-    outputChannel.appendLine('1. Output channel created');
 
-    // Initialize FileOpener output channel
-    FileOpener.initOutputChannel(outputChannel);
-    outputChannel.appendLine('2. FileOpener initialized');
+    const logger = createLogger(outputChannel);
+    context.subscriptions.push({ dispose: logger.dispose });
+
+    logger.log('File Linker extension activated');
+
+    // Initialize FileOpener logger
+    FileOpener.initLogger(logger.log);
 
     // Register hover provider
-    const hoverProvider = new FileLinkHoverProvider(outputChannel);
-    context.subscriptions.push(
-        vscode.languages.registerHoverProvider('*', hoverProvider)
-    );
-    outputChannel.appendLine('3. Hover provider registered');
+    const hoverProvider = new FileLinkHoverProvider(logger.log);
+    context.subscriptions.push(vscode.languages.registerHoverProvider('*', hoverProvider));
 
     // Register file open command
-    const openFileCommand = vscode.commands.registerCommand(
-        'file-linker.openFile',
-        (file_name: string) => {
-            outputChannel.appendLine(`Command triggered for file: ${file_name}`);
-            try {
-                FileOpener.openFile(file_name);
-                outputChannel.appendLine('File opened successfully');
-            } catch (error) {
-                outputChannel.appendLine(`Error opening file: ${error}`);
-                throw error;
-            }
-        }
-    );
+    const openFileCommand = vscode.commands.registerCommand('file-linker.openFile', (fileName: string) => {
+        logger.log(`Command triggered for file: ${fileName}`);
+        FileOpener.openFile(fileName);
+    });
     context.subscriptions.push(openFileCommand);
-    outputChannel.appendLine('4. File open command registered');
 
-    outputChannel.appendLine('5. Initial context set');
-    outputChannel.appendLine('6. Activation completed successfully');
+    logger.log('Activation completed successfully');
 }
 
 // this method is called when your extension is deactivated
