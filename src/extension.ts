@@ -5,30 +5,25 @@ import { FileOpener } from './file-opener';
 export function activate(context: vscode.ExtensionContext) {
     console.log('File Linker extension activated');
 
-    // Create output channel
     const outputChannel = vscode.window.createOutputChannel("File Linker Debug");
     context.subscriptions.push(outputChannel);
-    outputChannel.appendLine('1. Output channel created');
+    outputChannel.appendLine('File Linker extension activated');
 
-    // Initialize FileOpener output channel
     FileOpener.initOutputChannel(outputChannel);
-    outputChannel.appendLine('2. FileOpener initialized');
+    outputChannel.appendLine('FileOpener initialized');
 
-    // Register hover provider
     const hoverProvider = new FileLinkHoverProvider(outputChannel);
     context.subscriptions.push(
         vscode.languages.registerHoverProvider('*', hoverProvider)
     );
-    outputChannel.appendLine('3. Hover provider registered');
+    outputChannel.appendLine('Hover provider registered');
 
-    // Register file open command
     const openFileCommand = vscode.commands.registerCommand(
         'file-linker.openFile',
-        (file_name: string) => {
-            outputChannel.appendLine(`Command triggered for file: ${file_name}`);
+        (fileName: string) => {
+            outputChannel.appendLine(`Command triggered for file: ${fileName}`);
             try {
-                FileOpener.openFile(file_name);
-                outputChannel.appendLine('File opened successfully');
+                FileOpener.openFile(fileName);
             } catch (error) {
                 outputChannel.appendLine(`Error opening file: ${error}`);
                 throw error;
@@ -36,10 +31,9 @@ export function activate(context: vscode.ExtensionContext) {
         }
     );
     context.subscriptions.push(openFileCommand);
-    outputChannel.appendLine('4. File open command registered');
+    outputChannel.appendLine('File open command registered');
 
-    outputChannel.appendLine('5. Initial context set');
-    outputChannel.appendLine('6. Activation completed successfully');
+    outputChannel.appendLine('Activation completed successfully');
 }
 
 // this method is called when your extension is deactivated
