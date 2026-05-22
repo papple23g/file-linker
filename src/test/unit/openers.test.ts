@@ -1,6 +1,12 @@
 import * as assert from 'assert';
 import type { SpawnOptionsWithoutStdio } from 'child_process';
-import { buildExplorerSelectArgs, openWithExplorerFolder, openWithExplorerSelect, SpawnFn } from '../../openers';
+import {
+    buildExplorerSelectArgs,
+    openWithDefaultWindowsApp,
+    openWithExplorerFolder,
+    openWithExplorerSelect,
+    SpawnFn,
+} from '../../openers';
 
 suite('openers', () => {
     test('buildExplorerSelectArgs keeps emoji path intact', () => {
@@ -47,6 +53,27 @@ suite('openers', () => {
         assert.strictEqual(calls.length, 1);
         assert.strictEqual(calls[0].command, 'explorer.exe');
         assert.deepStrictEqual(calls[0].args, [folderPath]);
+        assert.strictEqual(calls[0].options?.shell, false);
+    });
+
+    test('openWithDefaultWindowsApp passes file path to explorer without select flag', () => {
+        const calls: Array<{
+            command: string;
+            args?: ReadonlyArray<string>;
+            options?: SpawnOptionsWithoutStdio;
+        }> = [];
+
+        const fakeSpawn: SpawnFn = (command, args, options) => {
+            calls.push({ command, args, options });
+            return {} as ReturnType<SpawnFn>;
+        };
+
+        const filePath = 'C:\\Users\\pappl\\OneDrive - Optoma\\奧圖碼\\奧圖碼TODO\\泰雅族.pptx';
+        openWithDefaultWindowsApp(filePath, fakeSpawn);
+
+        assert.strictEqual(calls.length, 1);
+        assert.strictEqual(calls[0].command, 'explorer.exe');
+        assert.deepStrictEqual(calls[0].args, [filePath]);
         assert.strictEqual(calls[0].options?.shell, false);
     });
 });

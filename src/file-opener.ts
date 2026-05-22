@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { spawn } from 'child_process';
+import { EventEmitter } from 'events';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -9,7 +10,7 @@ import {
     createEverythingTempDir,
     parseEverythingResultText,
 } from './everything-utils';
-import { openWithExplorerFolder, openWithMacOpen } from './openers';
+import { openWithDefaultWindowsApp, openWithExplorerFolder, openWithMacOpen } from './openers';
 import { openFileOnWindowsWithDeps, ProcessLike } from './windows-opener';
 
 export class FileOpener {
@@ -83,15 +84,13 @@ export class FileOpener {
             testExplorerExitCode: process.env.FILE_LINKER_TEST_EXPLORER_EXIT_CODE
                 ? Number(process.env.FILE_LINKER_TEST_EXPLORER_EXIT_CODE)
                 : undefined,
-            openFileInEditor: (filePath) => {
-                const captureFile = process.env.FILE_LINKER_TEST_OPEN_CAPTURE_FILE;
+            openFileFn: (filePath) => {
+                const captureFile = process.env.FILE_LINKER_TEST_DEFAULT_OPEN_CAPTURE_FILE;
                 if (captureFile) {
                     fs.writeFileSync(captureFile, filePath, 'utf8');
-                    return;
+                    return this.createSucceededTestProcess();
                 }
-                return vscode.commands
-                    .executeCommand('vscode.open', vscode.Uri.file(filePath))
-                    .then(() => undefined);
+                return openWithDefaultWindowsApp(filePath) as unknown as ProcessLike;
             },
             revealFileInOs: (filePath) => {
                 const captureFile = process.env.FILE_LINKER_TEST_REVEAL_CAPTURE_FILE;
@@ -129,6 +128,12 @@ export class FileOpener {
                 },
             },
         });
+    }
+
+    private static createSucceededTestProcess(): ProcessLike {
+        const childProcess = new EventEmitter() as ProcessLike;
+        queueMicrotask(() => childProcess.emit('exit', 0));
+        return childProcess;
     }
 
     private static openFileOnMac(fileName: string): void {

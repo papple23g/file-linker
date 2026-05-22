@@ -58,8 +58,8 @@ suite('File Linker integration', () => {
         assert.deepStrictEqual(args, ['foo.txt']);
     });
 
-    for (const fileName of ['01.txt', '會議準備.txt', '👥會議準備.txt']) {
-        test(`hover-derived [${fileName}] command opens the file without reveal shortcut`, async () => {
+    for (const fileName of ['01.txt', '會議準備.txt', '👥會議準備.txt', '泰雅族.pptx']) {
+        test(`hover-derived [${fileName}] command opens with the default app`, async () => {
             if (process.platform !== 'win32') {
                 return;
             }
@@ -67,17 +67,20 @@ suite('File Linker integration', () => {
             const previousExportText = process.env.FILE_LINKER_TEST_EXPORT_TEXT;
             const previousLogFile = process.env.FILE_LINKER_TEST_LOG_FILE;
             const previousOpenCaptureFile = process.env.FILE_LINKER_TEST_OPEN_CAPTURE_FILE;
+            const previousDefaultOpenCaptureFile = process.env.FILE_LINKER_TEST_DEFAULT_OPEN_CAPTURE_FILE;
             const previousRevealCaptureFile = process.env.FILE_LINKER_TEST_REVEAL_CAPTURE_FILE;
             const fixtureDir = fs.mkdtempSync(path.join(os.tmpdir(), 'file-linker-real-hover-'));
             const fixturePath = path.join(fixtureDir, fileName);
             const logFile = path.join(fixtureDir, 'events.log');
             const openCaptureFile = path.join(fixtureDir, 'opened.txt');
+            const defaultOpenCaptureFile = path.join(fixtureDir, 'default-opened.txt');
             const revealCaptureFile = path.join(fixtureDir, 'reveal.txt');
 
             fs.writeFileSync(fixturePath, fileName, 'utf8');
             process.env.FILE_LINKER_TEST_EXPORT_TEXT = `\uFEFF${fixturePath}\r\n`;
             process.env.FILE_LINKER_TEST_LOG_FILE = logFile;
             process.env.FILE_LINKER_TEST_OPEN_CAPTURE_FILE = openCaptureFile;
+            process.env.FILE_LINKER_TEST_DEFAULT_OPEN_CAPTURE_FILE = defaultOpenCaptureFile;
             process.env.FILE_LINKER_TEST_REVEAL_CAPTURE_FILE = revealCaptureFile;
             FileOpener.resetTestState();
 
@@ -88,13 +91,14 @@ suite('File Linker integration', () => {
 
                 assert.deepStrictEqual(args, [fileName]);
                 await vscode.commands.executeCommand(commandUri.path, ...args);
-                await waitForFileText(openCaptureFile, fixturePath, 3000);
+                await waitForFileText(defaultOpenCaptureFile, fixturePath, 3000);
 
                 const logText = fs.readFileSync(logFile, 'utf8');
                 assert.ok(logText.includes(`log:開始搜尋檔案: ${fileName}`));
                 assert.ok(logText.includes(`log:搜尋結果處理後: "${fixturePath}"`));
-                assert.ok(logText.includes('log:使用 VS Code vscode.open 開啟檔案'));
-                assert.strictEqual(fs.readFileSync(openCaptureFile, 'utf8'), fixturePath);
+                assert.ok(logText.includes('log:使用 Windows 預設程式開啟檔案'));
+                assert.strictEqual(fs.readFileSync(defaultOpenCaptureFile, 'utf8'), fixturePath);
+                assert.ok(!fs.existsSync(openCaptureFile));
                 assert.ok(!fs.existsSync(revealCaptureFile));
             } finally {
                 if (previousExportText === undefined) {
@@ -111,6 +115,11 @@ suite('File Linker integration', () => {
                     delete process.env.FILE_LINKER_TEST_OPEN_CAPTURE_FILE;
                 } else {
                     process.env.FILE_LINKER_TEST_OPEN_CAPTURE_FILE = previousOpenCaptureFile;
+                }
+                if (previousDefaultOpenCaptureFile === undefined) {
+                    delete process.env.FILE_LINKER_TEST_DEFAULT_OPEN_CAPTURE_FILE;
+                } else {
+                    process.env.FILE_LINKER_TEST_DEFAULT_OPEN_CAPTURE_FILE = previousDefaultOpenCaptureFile;
                 }
                 if (previousRevealCaptureFile === undefined) {
                     delete process.env.FILE_LINKER_TEST_REVEAL_CAPTURE_FILE;

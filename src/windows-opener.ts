@@ -28,7 +28,6 @@ export interface WindowsOpenMessages {
 export interface WindowsOpenDeps {
     extensionPath: string;
     spawnFn?: WindowsSpawnFn;
-    openFileInEditor?: (filePath: string) => PromiseLike<void> | void;
     openFileFn?: (filePath: string) => ProcessLike;
     openContainingFolderFallback?: (filePath: string) => void;
     revealFileInOs?: (filePath: string) => PromiseLike<void> | void;
@@ -165,22 +164,15 @@ export function openFileOnWindowsWithDeps(fileName: string, deps: WindowsOpenDep
 function executeOpenFileCommand(filePath: string, deps: WindowsOpenDeps): void {
     deps.log(`準備開啟檔案: ${filePath}`);
 
-    if (deps.openFileInEditor) {
-        deps.log('使用 VS Code vscode.open 開啟檔案');
-        Promise.resolve(deps.openFileInEditor(filePath))
-            .then(() => {
-                deps.log('檔案開啟成功');
-            })
-            .catch((err) => {
-                const message = err instanceof Error ? err.message : String(err);
-                deps.log(`vscode.open 失敗: ${message}`);
-                revealFileOrOpenFolder(filePath, deps);
-            });
-        return;
-    }
-
     if (deps.openFileFn) {
-        executeProcessOpen(filePath, deps.openFileFn(filePath), deps);
+        deps.log('使用 Windows 預設程式開啟檔案');
+        try {
+            executeDefaultAppOpen(filePath, deps.openFileFn(filePath), deps);
+        } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            deps.log(`預設程式啟動失敗: ${message}`);
+            revealFileOrOpenFolder(filePath, deps);
+        }
         return;
     }
 
@@ -194,6 +186,23 @@ function executeOpenFileCommand(filePath: string, deps: WindowsOpenDeps): void {
         : (openWithExplorerSelect(filePath) as unknown as ProcessLike);
 
     executeProcessOpen(filePath, childProcess, deps);
+}
+
+function executeDefaultAppOpen(filePath: string, childProcess: ProcessLike, deps: WindowsOpenDeps): void {
+    deps.log('檔案開啟命令已送出');
+
+    childProcess.on('error', (err: Error) => {
+        deps.log(`預設程式啟動失敗: ${err.message}`);
+        revealFileOrOpenFolder(filePath, deps);
+    });
+
+    childProcess.on('exit', (exitCode: number) => {
+        if (exitCode === 0) {
+            deps.log('檔案開啟成功');
+        } else {
+            deps.log(`預設程式啟動命令結束代碼: ${exitCode}`);
+        }
+    });
 }
 
 function executeProcessOpen(filePath: string, childProcess: ProcessLike, deps: WindowsOpenDeps): void {

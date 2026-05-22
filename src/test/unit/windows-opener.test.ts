@@ -159,9 +159,9 @@ suite('windows-opener', () => {
         assert.strictEqual(spawnOptions?.cwd, 'C:\\Extension\\bin');
     });
 
-    test('opens containing folder fallback when explorer select exits non-zero', () => {
+    test('does not open containing folder when default app launcher exits non-zero', () => {
         const esProcess = new FakeProcess();
-        const explorerProcess = new FakeProcess();
+        const defaultAppProcess = new FakeProcess();
         const fallbackPaths: string[] = [];
         const logs: string[] = [];
 
@@ -171,7 +171,7 @@ suite('windows-opener', () => {
             cleanupTempDir: () => {},
             existsSync: () => false,
             spawnFn: () => esProcess,
-            openFileFn: () => explorerProcess,
+            openFileFn: () => defaultAppProcess,
             openContainingFolderFallback: (filePath) => fallbackPaths.push(filePath),
             log: (message) => logs.push(message),
             messages: createMessages(),
@@ -179,27 +179,28 @@ suite('windows-opener', () => {
 
         esProcess.stdout.emit('data', Buffer.from('C:\\Temp\\foo.txt\r\n', 'utf8'));
         esProcess.emit('close', 0);
-        explorerProcess.emit('exit', 1);
+        defaultAppProcess.emit('exit', 1);
 
-        assert.deepStrictEqual(fallbackPaths, ['C:\\Temp\\foo.txt']);
-        assert.ok(logs.some((message) => message.includes('改為開啟檔案所在資料夾')));
+        assert.deepStrictEqual(fallbackPaths, []);
+        assert.ok(logs.some((message) => message.includes('預設程式啟動命令結束代碼: 1')));
+        assert.ok(!logs.some((message) => message.includes('改為開啟檔案所在資料夾')));
     });
 
-    test('opens file instead of revealing it when both open and reveal are available', async () => {
+    test('opens with the default app instead of VS Code editor or reveal when available', async () => {
         const esProcess = new FakeProcess();
-        const openProcess = new FakeProcess();
+        const defaultAppProcess = new FakeProcess();
         const revealedPaths: string[] = [];
-        const openedPaths: string[] = [];
+        const defaultAppPaths: string[] = [];
 
-        openFileOnWindowsWithDeps('foo.txt', {
+        openFileOnWindowsWithDeps('泰雅族.pptx', {
             extensionPath: 'C:\\Extension',
             createTempDir: () => 'C:\\Temp\\file-linker-es-test',
             cleanupTempDir: () => {},
             existsSync: () => false,
             spawnFn: () => esProcess,
             openFileFn: (filePath) => {
-                openedPaths.push(filePath);
-                return openProcess;
+                defaultAppPaths.push(filePath);
+                return defaultAppProcess;
             },
             revealFileInOs: (filePath) => {
                 revealedPaths.push(filePath);
@@ -208,11 +209,11 @@ suite('windows-opener', () => {
             messages: createMessages(),
         });
 
-        esProcess.stdout.emit('data', Buffer.from('C:\\Temp\\foo.txt\r\n', 'utf8'));
+        esProcess.stdout.emit('data', Buffer.from('C:\\Temp\\泰雅族.pptx\r\n', 'utf8'));
         esProcess.emit('close', 0);
         await new Promise((resolve) => setImmediate(resolve));
 
-        assert.deepStrictEqual(openedPaths, ['C:\\Temp\\foo.txt']);
+        assert.deepStrictEqual(defaultAppPaths, ['C:\\Temp\\泰雅族.pptx']);
         assert.deepStrictEqual(revealedPaths, []);
     });
 

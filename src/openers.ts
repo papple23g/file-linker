@@ -30,6 +30,16 @@ export function openWithExplorerFolder(
     });
 }
 
+export function openWithDefaultWindowsApp(
+    filePath: string,
+    spawnFn: SpawnFn = spawn,
+): ReturnType<typeof spawn> {
+    return spawnFn('explorer.exe', [filePath], {
+        shell: false,
+        windowsHide: true,
+    });
+}
+
 export function openWithMacOpen(
     filePath: string,
     spawnFn: SpawnFn = spawn,
