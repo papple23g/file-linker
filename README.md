@@ -47,6 +47,11 @@ This extension does not add any VS Code settings.
 
 ## Release Notes
 
+### 1.1.8
+
+- Fixed hover command links not executing in some VS Code/Cursor versions after 1.1.7.
+- Added integration coverage to keep hover links clickable.
+
 ### 1.1.7
 
 - Fixed Windows file opening for names containing emoji, such as `[👥meeting.txt]`.

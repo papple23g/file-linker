@@ -27,8 +27,9 @@ export class FileLinkHoverProvider implements vscode.HoverProvider {
         );
 
         const hoverContent = new vscode.MarkdownString();
-        // Safer than isTrusted=true: only allow this extension command.
-        hoverContent.isTrusted = { enabledCommands: ['file-linker.openFile'] };
+        // Keep boolean trust for VS Code/Cursor versions that support command
+        // links but not the newer enabledCommands trust object.
+        hoverContent.isTrusted = true;
         hoverContent.appendMarkdown(`[Open ${fileName}](${commandUri})`);
 
         return new vscode.Hover(hoverContent, range);

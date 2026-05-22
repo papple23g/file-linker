@@ -2,6 +2,12 @@
 
 All notable changes to the "File Linker" extension will be documented in this file.
 
+## [1.1.8] - 2026-05-22
+
+### Fixed
+- Restored hover command link compatibility for VS Code/Cursor versions where restricted command trust objects do not execute from hover tooltips.
+- Added integration coverage to ensure hover command links remain trusted and clickable.
+
 ## [1.1.7] - 2026-05-21
 
 ### Fixed

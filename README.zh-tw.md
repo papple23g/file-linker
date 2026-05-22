@@ -38,6 +38,11 @@
 
 ## 版本紀錄
 
+### 1.1.8
+
+- 修復 1.1.7 後在部分 VS Code/Cursor 版本中 hover command link 點擊不執行的問題。
+- 新增 integration 測試覆蓋，確保 hover link 保持可點擊。
+
 ### 1.1.7
 
 - 修復 Windows 上 emoji 檔名無法開啟的問題，例如 `[👥會議準備.txt]`。

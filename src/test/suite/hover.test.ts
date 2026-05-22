@@ -20,12 +20,14 @@ suite('File Linker (integration)', () => {
         assert.ok(Array.isArray(hovers));
         assert.ok(hovers.length >= 1);
 
-        const hover0 = hovers[0];
-        const contents = hover0.contents
-            .map((c) => (typeof c === 'string' ? c : (c as vscode.MarkdownString).value))
-            .join('\n');
+        const fileLinkHover = hovers
+            .flatMap((hover) => hover.contents)
+            .find((content): content is vscode.MarkdownString => (
+                typeof content !== 'string' && content.value.includes('command:file-linker.openFile?')
+            ));
 
-        assert.ok(contents.includes('command:file-linker.openFile?'));
-        assert.ok(contents.includes('Open foo.txt'));
+        assert.ok(fileLinkHover);
+        assert.ok(fileLinkHover.value.includes('Open foo.txt'));
+        assert.strictEqual(fileLinkHover.isTrusted, true);
     });
 });
