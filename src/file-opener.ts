@@ -1,10 +1,18 @@
 import * as vscode from 'vscode';
 import { spawn } from 'child_process';
 import * as iconv from 'iconv-lite';
+import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import { isPlausibleFilePath } from './path-utils';
 import { openWithExplorerSelect, openWithMacOpen } from './openers';
+import {
+    buildEverythingExportArgs,
+    cleanupEverythingTempDir,
+    cleanupStaleEverythingTempDirs,
+    createEverythingTempDir,
+    parseEverythingExportText,
+} from './everything-utils';
 
 export class FileOpener {
     private static log: (message: string) => void = () => {};
@@ -40,80 +48,94 @@ export class FileOpener {
 
         const esPath = path.join(extension.extensionPath, 'bin', 'es.exe');
         const esDir = path.dirname(esPath);
+        cleanupStaleEverythingTempDirs(this.log);
 
-        const esProcess = spawn(
-            esPath,
-            ['-n', '1', '-full-path-and-name', '-sort', 'run-count', fileName],
-            {
+        let tempDir = '';
+        let exportPath = '';
+
+        try {
+            tempDir = createEverythingTempDir();
+            exportPath = path.join(tempDir, 'results.txt');
+        } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            this.log(`建立 Everything 暫存資料夾失敗: ${message}`);
+            vscode.window.showErrorMessage(`建立暫存檔失敗: ${message}`);
+            return;
+        }
+
+        let didSpawnError = false;
+        let esProcess: ReturnType<typeof spawn>;
+
+        try {
+            esProcess = spawn(esPath, buildEverythingExportArgs(fileName, exportPath), {
                 windowsHide: true,
                 cwd: esDir,
-            },
-        );
+            });
+        } catch (err) {
+            cleanupEverythingTempDir(tempDir, this.log);
+            const message = err instanceof Error ? err.message : String(err);
+            this.log(`執行 Everything 時發生錯誤: ${message}`);
+            vscode.window.showErrorMessage(`執行 Everything 時發生錯誤: ${message}`);
+            return;
+        }
 
-        let result = '';
-        esProcess.stdout.on('data', (data: Buffer) => {
-            // 先嘗試 UTF-8 解碼
-            let decoded = iconv.decode(data, 'utf8');
-
-            // 如果包含 replacement character (�)，表示 UTF-8 解碼失敗，改用 cp950
-            if (decoded.includes('\uFFFD')) {
-                decoded = iconv.decode(data, 'cp950');
-                this.log('使用 cp950 編碼解碼');
-            } else {
-                this.log('使用 UTF-8 編碼解碼');
-            }
-
-            decoded = decoded.trim();
-            result += decoded;
-            this.log(`Everything 搜尋結果: ${decoded}`);
-        });
-
-        esProcess.stderr.on('data', (data: Buffer) => {
-            const decodedErr = iconv.decode(data, 'cp950');
-            this.log(`Everything 錯誤: ${decodedErr}`);
-        });
+        if (esProcess.stderr) {
+            esProcess.stderr.on('data', (data: Buffer) => {
+                const decodedErr = iconv.decode(data, 'cp950');
+                this.log(`Everything 錯誤: ${decodedErr}`);
+            });
+        }
 
         esProcess.on('error', (err) => {
+            didSpawnError = true;
+            cleanupEverythingTempDir(tempDir, this.log);
             this.log(`執行 Everything 時發生錯誤: ${err.message}`);
             vscode.window.showErrorMessage(`執行 Everything 時發生錯誤: ${err.message}`);
         });
 
         esProcess.on('close', (code) => {
+            if (didSpawnError) return;
+
             this.log(`Everything 搜尋完成，結束代碼: ${code}`);
-            if (code !== 0) {
-                if (code === 8) {
-                    vscode.window
-                        .showErrorMessage(
-                            'Everything service is not running. Please start Everything to use this feature.',
-                            'Go to Download Page',
-                        )
-                        .then((selection) => {
-                            if (selection === 'Go to Download Page') {
-                                vscode.env.openExternal(vscode.Uri.parse('https://www.voidtools.com/downloads/'));
-                            }
-                        });
-                } else {
-                    vscode.window.showErrorMessage(
-                        `Everything search failed with exit code: ${code}. See Output panel for details.`,
-                    );
+            try {
+                if (code !== 0) {
+                    if (code === 8) {
+                        vscode.window
+                            .showErrorMessage(
+                                'Everything service is not running. Please start Everything to use this feature.',
+                                'Go to Download Page',
+                            )
+                            .then((selection) => {
+                                if (selection === 'Go to Download Page') {
+                                    vscode.env.openExternal(vscode.Uri.parse('https://www.voidtools.com/downloads/'));
+                                }
+                            });
+                    } else {
+                        vscode.window.showErrorMessage(
+                            `Everything search failed with exit code: ${code}. See Output panel for details.`,
+                        );
+                    }
+                    return;
                 }
-                return;
+
+                const outputText = fs.existsSync(exportPath) ? fs.readFileSync(exportPath, 'utf8') : '';
+                const filePath = parseEverythingExportText(outputText);
+                this.log(`搜尋結果處理後: "${filePath}" (長度: ${filePath.length})`);
+
+                if (!filePath) {
+                    vscode.window.showInformationMessage(`找不到檔案: ${fileName}`);
+                    return;
+                }
+
+                if (!isPlausibleFilePath(filePath)) {
+                    vscode.window.showWarningMessage(`搜尋結果路徑格式無效: ${fileName}`);
+                    return;
+                }
+
+                this.executeOpenFileCommand('explorer', filePath);
+            } finally {
+                cleanupEverythingTempDir(tempDir, this.log);
             }
-
-            const filePath = result.trim();
-            this.log(`搜尋結果處理後: "${filePath}" (長度: ${filePath.length})`);
-
-            if (!filePath) {
-                vscode.window.showInformationMessage(`找不到檔案: ${fileName}`);
-                return;
-            }
-
-            if (!isPlausibleFilePath(filePath)) {
-                vscode.window.showWarningMessage(`搜尋結果路徑格式無效: ${fileName}`);
-                return;
-            }
-
-            this.executeOpenFileCommand('explorer', filePath);
         });
     }
 

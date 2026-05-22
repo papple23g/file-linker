@@ -2,7 +2,7 @@
   "name": "file-linker",
   "displayName": "File Linker",
   "description": "Hover and click to instantly open files marked in square brackets using your system's search engine (Everything on Windows, Spotlight on macOS).",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "publisher": "peterwang",
   "repository": {
     "type": "git",
@@ -51,9 +51,10 @@
     "test:integration": "node ./out/test/runTest.js",
     "test": "npm run test:unit && npm run test:integration",
     "package": "vsce package",
-    "publish:vscode": "vsce publish",
-    "publish:openvsx": "ovsx publish -p $OVSX_TOKEN",
-    "publish:all": "npm run publish:vscode && npm run publish:openvsx"
+    "package:release": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/release.ps1",
+    "publish:vscode": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/release.ps1 -PublishMarketplace",
+    "publish:openvsx": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/release.ps1 -PublishOpenVsx",
+    "publish:all": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/release.ps1 -PublishMarketplace -PublishOpenVsx"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",

@@ -74,66 +74,15 @@ if ($CreateNamespace) {
     exit 0
 }
 
-# 尋找最新的 .vsix 檔案
-Write-Host "🔍 尋找最新的 .vsix 檔案..." -ForegroundColor Cyan
-$vsixFiles = Get-ChildItem -Path . -Filter "file-linker-*.vsix" | Sort-Object LastWriteTime -Descending
-
-if ($vsixFiles.Count -eq 0) {
-    Write-Host "❌ 找不到 .vsix 檔案，正在從原始碼打包..." -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "📦 執行打包指令..." -ForegroundColor Cyan
-    npm run vscode:prepublish
-    
+# 安全發布：重新打包目前版本、掃描 VSIX，通過後才發布。
+$oldOpenVsxPat = $env:OVSX_PAT
+try {
+    $env:OVSX_PAT = $Token
+    & "$PSScriptRoot\scripts\release.ps1" -PublishOpenVsx
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "❌ 打包失敗" -ForegroundColor Red
-        exit 1
+        exit $LASTEXITCODE
     }
-    
-    Write-Host "📦 使用 vsce 打包..." -ForegroundColor Cyan
-    npx vsce package
-    
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "❌ 打包失敗" -ForegroundColor Red
-        exit 1
-    }
-    
-    # 重新尋找
-    $vsixFiles = Get-ChildItem -Path . -Filter "file-linker-*.vsix" | Sort-Object LastWriteTime -Descending
-}
-
-if ($vsixFiles.Count -eq 0) {
-    Write-Host "❌ 仍然找不到 .vsix 檔案" -ForegroundColor Red
-    exit 1
-}
-
-$latestVsix = $vsixFiles[0]
-Write-Host "✅ 找到檔案: $($latestVsix.Name)" -ForegroundColor Green
-Write-Host ""
-
-# 發布到 Open VSX
-Write-Host "🚀 正在發布到 Open VSX..." -ForegroundColor Cyan
-Write-Host "   檔案: $($latestVsix.Name)" -ForegroundColor Gray
-npx ovsx publish $latestVsix.FullName -p $Token
-
-if ($LASTEXITCODE -eq 0) {
-    Write-Host ""
-    Write-Host "🎉 發布成功！" -ForegroundColor Green
-    Write-Host ""
-    Write-Host "📍 檢視擴充插件:" -ForegroundColor Cyan
-    Write-Host "   https://open-vsx.org/extension/$publisher/$extensionName"
-    Write-Host ""
-    Write-Host "💡 提示: Cursor 使用者現在可以在擴充插件市場搜尋到你的插件了！" -ForegroundColor Yellow
-} else {
-    Write-Host ""
-    Write-Host "❌ 發布失敗" -ForegroundColor Red
-    Write-Host ""
-    Write-Host "可能的原因:" -ForegroundColor Yellow
-    Write-Host "  1. Token 無效或已過期"
-    Write-Host "  2. 命名空間尚未建立（使用 -CreateNamespace 參數）"
-    Write-Host "  3. 此版本已經發布過（需要更新版本號）"
-    Write-Host ""
-    Write-Host "如果命名空間尚未建立，請執行:" -ForegroundColor Cyan
-    Write-Host "  .\publish-openvsx.ps1 -Token `"YOUR_TOKEN`" -CreateNamespace"
-    exit 1
+} finally {
+    $env:OVSX_PAT = $oldOpenVsxPat
 }
 

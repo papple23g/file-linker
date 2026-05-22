@@ -3,6 +3,10 @@ import * as os from 'os';
 import * as fs from 'fs';
 import { runTests } from '@vscode/test-electron';
 
+function clearElectronRunAsNode(): void {
+    delete process.env.ELECTRON_RUN_AS_NODE;
+}
+
 function ensureSafePath(repoRoot: string): string {
     if (!repoRoot.includes(' ')) {
         return repoRoot;
@@ -25,6 +29,8 @@ function ensureSafePath(repoRoot: string): string {
 
 async function main() {
     try {
+        clearElectronRunAsNode();
+
         const repoRoot = path.resolve(__dirname, '../../');
         const devRoot = ensureSafePath(repoRoot);
 

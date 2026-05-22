@@ -6,4 +6,16 @@ tsconfig.json
 src/
 test.js
 memory-bank/
-note.txt
+note*.txt
+AGENTS.md
+PUBLISH_GUIDE.md
+publish-openvsx.ps1
+publish-to-openvsx.md
+HOW_TO_CLAIM_NAMESPACE.md
+.env
+.env.*
+*.token
+*.key
+*.secret
+secrets/
+scripts/

@@ -15,6 +15,7 @@ A VSCode extension that allows you to hover over and click on file names within 
   - On **macOS**, it uses the built-in Spotlight search (`mdfind`).
 - **System-Wide Search**: Finds files across your entire system, not just within the current workspace.
 - **No Manual Pathing**: Eliminates the need to manually browse or type file paths.
+- **Unicode and Emoji File Names**: Windows search results are read from Everything's UTF-8 export output, so file names such as `[👥meeting.txt]` can be opened reliably.
 
 ## Requirements
 
@@ -36,7 +37,22 @@ This extension does not add any VS Code settings.
 - On Windows, the extension requires Everything to be running. If it's not, a helpful error message will guide you to install it.
 - On macOS, search results depend on your Spotlight index. If a file isn't found, ensure it's in a location indexed by Spotlight.
 
+## Publishing and Token Safety
+
+- Do not store real Marketplace or Open VSX tokens in this repository.
+- Keep local token notes outside the repository, for example next to the project folder as `<repo path> note.txt`.
+- Use `note.example.txt` as a template only; never paste real tokens into it.
+- Use `npm run package:release` before publishing. It builds a VSIX and scans the package for blocked secret files and known token patterns.
+- Use `npm run publish:all` only after the release package scan passes.
+
 ## Release Notes
+
+### 1.1.7
+
+- Fixed Windows file opening for names containing emoji, such as `[👥meeting.txt]`.
+- Added UTF-8 Everything export handling to preserve non-ANSI file paths.
+- Added release packaging safeguards to prevent local token notes or secret files from being included in VSIX packages.
+- Hardened the integration test runner against inherited Electron environment variables.
 
 ### 1.1.4
 

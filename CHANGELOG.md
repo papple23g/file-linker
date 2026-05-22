@@ -2,6 +2,17 @@
 
 All notable changes to the "File Linker" extension will be documented in this file.
 
+## [1.1.7] - 2026-05-21
+
+### Fixed
+- Fixed Windows file opening for file names containing emoji, such as `[👥會議準備.txt]`.
+- Preserved non-ANSI paths by reading Everything results from UTF-8 export files instead of stdout.
+- Hardened integration tests against inherited `ELECTRON_RUN_AS_NODE` environment variables.
+
+### Security
+- Added release packaging safeguards that fail if local token notes, secret files, or known publish token values appear in the VSIX.
+- Added `note.example.txt` as a safe placeholder template and documented that real tokens must stay outside the repository.
+
 ## [1.1.5] - 2026-02-20
 
 ### Fixed
