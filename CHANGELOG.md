@@ -2,6 +2,13 @@
 
 All notable changes to the "File Linker" extension will be documented in this file.
 
+## [1.1.11] - 2026-05-23
+
+### Changed
+- Updated English and Traditional Chinese README release notes for v1.1.10.
+- Moved internal Open VSX, namespace, and publishing notes into `docs/internal/publishing.md`.
+- Restored `AGENTS.md` as the Codex entrypoint while keeping internal files excluded from VSIX packages.
+
 ## [1.1.10] - 2026-05-23
 
 ### Fixed

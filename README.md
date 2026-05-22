@@ -38,6 +38,13 @@ This extension does not add any VS Code settings.
 
 ## Release Notes
 
+### 1.1.10
+
+- Fixed hover command links so clicking bracketed file names works reliably again.
+- Added UTF-8 Everything export handling for Chinese and emoji filenames while keeping the legacy stdout fallback.
+- Restored Windows default-application opening, so files such as `.pptx` open in their associated app.
+- Restored unit and extension-host integration tests for click handling, search results, and default-app opening.
+
 ### 1.1.9
 
 - Emergency rollback release: restored the stable v1.1.5 runtime behavior.

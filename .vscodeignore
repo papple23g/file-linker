@@ -6,12 +6,10 @@ tsconfig.json
 src/
 test.js
 memory-bank/
+docs/internal/
 out/
 AGENTS.md
-PUBLISH_GUIDE.md
 publish-openvsx.ps1
-publish-to-openvsx.md
-HOW_TO_CLAIM_NAMESPACE.md
 note*.txt
 .env
 .env.*
