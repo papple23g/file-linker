@@ -2,6 +2,17 @@
 
 All notable changes to the "File Linker" extension will be documented in this file.
 
+## [1.1.10] - 2026-05-23
+
+### Fixed
+- Restored clickable hover command behavior with boolean `MarkdownString.isTrusted` compatibility.
+- Restored default debug output for activation, hover, command trigger, search, and open events.
+- Fixed Windows opening behavior so files open with the system default application instead of VS Code or Explorer reveal.
+- Preserved legacy Everything stdout fallback while adding UTF-8 export support for Chinese and emoji filenames.
+
+### Added
+- Added unit and extension-host integration tests for hover command payloads, stdout fallback, UTF-8 export, emoji filenames, and default-application opening.
+
 ## [1.1.9] - 2026-05-22
 
 ### Fixed

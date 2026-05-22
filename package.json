@@ -2,7 +2,7 @@
   "name": "file-linker",
   "displayName": "File Linker",
   "description": "Hover and click to instantly open files marked in square brackets using your system's search engine (Everything on Windows, Spotlight on macOS).",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "publisher": "peterwang",
   "repository": {
     "type": "git",
