@@ -2,7 +2,7 @@
   "name": "file-linker",
   "displayName": "File Linker",
   "description": "Hover and click to instantly open files marked in square brackets using your system's search engine (Everything on Windows, Spotlight on macOS).",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "publisher": "peterwang",
   "repository": {
     "type": "git",
@@ -25,47 +25,25 @@
         "command": "file-linker.openFile",
         "title": "Open File with Everything"
       }
-    ],
-    "configuration": {
-      "title": "File Linker",
-      "properties": {
-        "file-linker.debug": {
-          "type": "boolean",
-          "default": false,
-          "description": "Enable debug logs in the \"File Linker Debug\" output channel."
-        }
-      }
-    }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run webpack:prod",
     "compile": "webpack --mode none",
-    "compile:tsc": "tsc -p .",
     "watch": "webpack --mode none --watch",
-    "watch:tsc": "tsc -watch -p .",
     "webpack": "webpack --mode none",
     "webpack:prod": "webpack --mode production",
-    "pretest": "npm run compile && npm run compile:tsc && npm run lint",
+    "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "test:unit": "mocha --ui tdd --color \"out/test/unit/**/*.test.js\"",
-    "test:integration": "node ./out/test/runTest.js",
-    "test": "npm run test:unit && npm run test:integration",
-    "package": "vsce package",
-    "package:release": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/release.ps1",
-    "publish:vscode": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/release.ps1 -PublishMarketplace",
-    "publish:openvsx": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/release.ps1 -PublishOpenVsx",
-    "publish:all": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/release.ps1 -PublishMarketplace -PublishOpenVsx"
+    "test": "node ./dist/test/runTest.js",
+    "package": "vsce package"
   },
   "devDependencies": {
-    "@types/mocha": "^10.0.10",
     "@types/node": "^16.x.x",
     "@types/vscode": "^1.60.0",
     "@typescript-eslint/eslint-plugin": "^6.x.x",
     "@typescript-eslint/parser": "^6.x.x",
-    "@vscode/test-electron": "^2.4.3",
     "eslint": "^8.x.x",
-    "glob": "^10.4.5",
-    "mocha": "^10.8.2",
     "ts-loader": "^9.5.2",
     "typescript": "^5.x.x",
     "webpack": "^5.99.8",

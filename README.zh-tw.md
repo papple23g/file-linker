@@ -15,7 +15,6 @@
     -   在 **macOS** 上，則使用內建的 **Spotlight** 搜尋功能 (`mdfind`)，無需安裝額外軟體。
 -   **全系統搜尋**：在您的整個系統中尋找檔案，而不僅限於目前的工作區。
 -   **智慧錯誤處理**：如果 Windows 上的 Everything 服務未執行，本擴充功能會引導您進行安裝。
--   **支援 Unicode 與 emoji 檔名**：Windows 會從 Everything 的 UTF-8 匯出結果讀取路徑，因此 `[👥會議準備.txt]` 這類檔名可以可靠開啟。
 
 ## 必要條件
 
@@ -28,27 +27,11 @@
 2.  點擊連結會觸發系統原生的搜尋引擎（Windows 為 Everything，macOS 為 Spotlight）。
 3.  在 Windows 上，會直接開啟最符合的檔案。在 macOS 上，如果找到多個檔案，會提供一個清單讓您選擇。
 
-## 發布與 Token 安全
-
-- 請勿將 Marketplace 或 Open VSX 的真實 token 放入此 repository。
-- 本機 token 筆記請放在 repository 外側，例如專案資料夾旁的 `<repo path> note.txt`。
-- `note.example.txt` 只作為格式範本，不要填入真實 token。
-- 發布前先執行 `npm run package:release`；它會建立 VSIX 並掃描封包中是否含有 token 筆記或敏感檔案。
-- 掃描通過後再執行 `npm run publish:all` 發布。
-
 ## 版本紀錄
 
-### 1.1.8
+### 1.1.9
 
-- 修復 1.1.7 後在部分 VS Code/Cursor 版本中 hover command link 點擊不執行的問題。
-- 新增 integration 測試覆蓋，確保 hover link 保持可點擊。
-
-### 1.1.7
-
-- 修復 Windows 上 emoji 檔名無法開啟的問題，例如 `[👥會議準備.txt]`。
-- 改用 Everything UTF-8 匯出結果讀取路徑，避免非 ANSI 字元在 stdout 解碼時遺失。
-- 新增發布封包安全掃描，避免本機 token 筆記或敏感檔被打入 VSIX。
-- 修正 integration test runner 可能被繼承的 Electron 環境變數干擾。
+- 緊急回滾版本：恢復穩定版 v1.1.5 的執行行為。
 
 ### 1.1.4
 

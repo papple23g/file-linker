@@ -13,8 +13,7 @@
         "noFallthroughCasesInSwitch": true,
         "noUnusedParameters": false,
         "noUnusedLocals": false,
-        "esModuleInterop": true,
-        "skipLibCheck": true
+        "esModuleInterop": true
     },
     "exclude": [
         "node_modules",

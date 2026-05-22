@@ -1,114 +1,17 @@
 {
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Run Extension",
-      "type": "extensionHost",
-      "request": "launch",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}"
-      ],
-      "outFiles": [
-        "${workspaceFolder}/dist/**/*.js"
-      ],
-      "preLaunchTask": "npm: compile"
-    },
-
-    {
-      "name": "test: 🧪 unit (npm run test:unit)",
-      "type": "pwa-node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run",
-        "test:unit"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
-    },
-    {
-      "name": "test: 🧪 integration (npm run test:integration)",
-      "type": "pwa-node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run",
-        "test:integration"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
-    },
-    {
-      "name": "test: 🧪 all (npm test)",
-      "type": "pwa-node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "test"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
-    },
-
-    {
-      "name": "tool: lint (npm run lint)",
-      "type": "pwa-node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run",
-        "lint"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
-    },
-    {
-      "name": "tool: compile:tsc (npm run compile:tsc)",
-      "type": "pwa-node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run",
-        "compile:tsc"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
-    },
-    {
-      "name": "tool: compile (npm run compile)",
-      "type": "pwa-node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run",
-        "compile"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
-    }
-  ]
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Run Extension",
+			"type": "extensionHost",
+			"request": "launch",
+			"args": [
+				"--extensionDevelopmentPath=${workspaceFolder}"
+			],
+			"outFiles": [
+				"${workspaceFolder}/dist/**/*.js"
+			],
+			"preLaunchTask": "npm: compile"
+		}
+	]
 }

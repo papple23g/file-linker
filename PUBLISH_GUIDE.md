@@ -35,25 +35,15 @@
 4. 點擊 "Generate Token"
 5. **立即複製** Token（只會顯示一次！）
 
-### 步驟 2️⃣：設定 Token（可選但推薦）
-
-**不要把真實 token 放在 repository 裡。** 建議放在專案資料夾外側的 sibling note：
-
-```text
-<repo path> note.txt
-```
-
-repo 內只保留 `note.example.txt` 作為格式範本。
-
-也可以在 PowerShell session 中設定環境變數：
+### 步驟 2️⃣：設定環境變數（可選但推薦）
 
 在 PowerShell 中執行：
 ```powershell
 # 設定環境變數（本次 session）
-$env:OVSX_PAT = "YOUR_ACCESS_TOKEN_HERE"
+$env:OVSX_TOKEN = "YOUR_ACCESS_TOKEN_HERE"
 
 # 永久儲存（可選）
-[System.Environment]::SetEnvironmentVariable('OVSX_PAT', 'YOUR_ACCESS_TOKEN_HERE', 'User')
+[System.Environment]::SetEnvironmentVariable('OVSX_TOKEN', 'YOUR_ACCESS_TOKEN_HERE', 'User')
 ```
 
 ### 步驟 3️⃣：首次發布
@@ -91,14 +81,17 @@ https://open-vsx.org/extension/peterwang/file-linker
 
 每次發布新版本時：
 
-### 方法 1：使用安全自動化腳本（推薦）
+### 方法 1：使用自動化腳本（推薦）
 ```powershell
-# 1. 更新 package.json / package-lock.json 版本號
-# 2. 測試、打包目前版本並掃描 VSIX 是否含 token
-npm run package:release
+# 1. 更新 package.json 的版本號
+# 2. 執行打包（如果沒有現成的 .vsix）
+npm run package
 
-# 3. 發布到 VSCode Marketplace 與 Open VSX
-npm run publish:all
+# 3. 發布到 VSCode Marketplace
+npm run publish:vscode
+
+# 4. 發布到 Open VSX
+.\publish-openvsx.ps1
 ```
 
 ### 方法 2：使用 npm scripts
@@ -106,10 +99,10 @@ npm run publish:all
 # 發布到 VSCode Marketplace
 npm run publish:vscode
 
-# 發布到 Open VSX（會重新打包並掃描 VSIX）
+# 發布到 Open VSX
 npm run publish:openvsx
 
-# 或者一次發布到兩個平台（會重新打包並掃描 VSIX）
+# 或者一次發布到兩個平台
 npm run publish:all
 ```
 
@@ -177,10 +170,8 @@ A:
 ## 🔐 安全提示
 
 - ⚠️ **永遠不要**將 Access Token 提交到 Git
-- ⚠️ **永遠不要**將 Access Token 放在 repository 內的 `note.txt`
 - ⚠️ **永遠不要**在公開場合分享 Token
-- ✅ 使用環境變數或 repository 外側的 sibling note 儲存 Token
-- ✅ 發布前用 `npm run package:release` 掃描 VSIX 內容
+- ✅ 使用環境變數儲存 Token
 - ✅ 如果懷疑 Token 洩露，立即刪除並生成新的
 - ✅ 建議為不同環境（本機、CI/CD）生成不同的 Token
 

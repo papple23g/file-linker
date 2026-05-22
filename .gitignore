@@ -6,14 +6,10 @@ node_modules
 .DS_Store
 coverage
 *.log
-note*.txt
-!note.example.txt
+note.txt
 
 # 環境變數和敏感資訊
 .env
 .env.local
-.env.*
 *.token
 *.key
-*.secret
-secrets/

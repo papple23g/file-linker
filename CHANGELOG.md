@@ -2,22 +2,11 @@
 
 All notable changes to the "File Linker" extension will be documented in this file.
 
-## [1.1.8] - 2026-05-22
+## [1.1.9] - 2026-05-22
 
 ### Fixed
-- Restored hover command link compatibility for VS Code/Cursor versions where restricted command trust objects do not execute from hover tooltips.
-- Added integration coverage to ensure hover command links remain trusted and clickable.
-
-## [1.1.7] - 2026-05-21
-
-### Fixed
-- Fixed Windows file opening for file names containing emoji, such as `[👥會議準備.txt]`.
-- Preserved non-ANSI paths by reading Everything results from UTF-8 export files instead of stdout.
-- Hardened integration tests against inherited `ELECTRON_RUN_AS_NODE` environment variables.
-
-### Security
-- Added release packaging safeguards that fail if local token notes, secret files, or known publish token values appear in the VSIX.
-- Added `note.example.txt` as a safe placeholder template and documented that real tokens must stay outside the repository.
+- Emergency rollback release: restored the extension behavior and runtime implementation to the stable v1.1.5 code path.
+- Published as v1.1.9 because marketplaces do not allow republishing the existing v1.1.5 version number.
 
 ## [1.1.5] - 2026-02-20
 
